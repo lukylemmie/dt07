@@ -1,6 +1,5 @@
 package dt07;
 
-import javax.security.auth.login.FailedLoginException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -15,19 +14,19 @@ import java.util.Hashtable;
 public class BigBrother {
     private Hashtable<String, String> censor = new Hashtable<String, String>();
     private TextFileReader reader = new TextFileReader();
-    private ArrayList<String> censorWords;
+    private ArrayList<String> censorWordSub;
 
     public BigBrother(){
         String wordPair[];
 
         try {
-            censorWords = reader.OpenFile("censorWordList.txt");
+            censorWordSub = reader.OpenFile("censorWordList.txt");
         } catch (IOException e) {
             System.out.println("Failed to open censorWordList.txt file.  Please make sure it is in active directory");
         }
 
-        for(String line : censorWords){
-            wordPair = line.split(",");
+        for(String line : censorWordSub){
+            wordPair = line.split("=");
             censor.put(wordPair[0], wordPair[1]);
         }
     }
@@ -41,6 +40,12 @@ public class BigBrother {
 
         for(String word : words){
             temp = word.replaceAll("[^a-zA-Z0-9]","");
+            temp = censor.get(temp.toLowerCase());
+            if(temp != null){
+                output += temp + " ";
+            } else {
+                output += word + " ";
+            }
         }
 
         return output;
